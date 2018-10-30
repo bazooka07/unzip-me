@@ -1,0 +1,11 @@
+#!/bin/sh
+
+cd $(dirname $0)
+mkdir -p dist
+rm -f dist/*.zip
+ZIPNAME="$(basename $PWD)"
+cd ..
+zip -Xor "${ZIPNAME}/dist/${ZIPNAME}_$(date '+%y%m%d').zip" "$ZIPNAME" \
+	-x '*.log' '*/publish' '*/dist/' '*/.ht*' '*/.git*' '*/*.swp'
+cd $OLDPWD
+
