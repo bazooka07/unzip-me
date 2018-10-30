@@ -1,0 +1,6 @@
+<?php
+header('Content-Type: text/plain; charset=utf-8');
+echo '$_SERVER = ';
+print_r($_SERVER);
+echo "\n__DIR__ = ". __DIR__ ."\n";
+?>
