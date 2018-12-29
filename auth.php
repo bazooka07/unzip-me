@@ -60,11 +60,18 @@ if(!empty($_POST)) {
 			$db = dirname($_SERVER['SCRIPT_NAME']).'/'.DBNAME;
 			$authUserFile = "PerlSetVar AuthFile $db";
 			$password = substr($params['secret1'], 0, 25); // no encryption
+			$cache = '';
 		} else {
 			// Sometimes dirname(...) may be different of __DIR__ (lws.fr)
 			$db = dirname($_SERVER['SCRIPT_FILENAME']).'/'.DBNAME;
 			$authUserFile = "AuthUserFile $db";
 			$password = crypt_apr1_md5(substr($params['secret1'], 0, 25));
+			$cache = <<< CACHE
+\n<IfModule mod_expires.c>
+	ExpiresActive on
+	ExpiresByType application/javascript "access plus 20 minutes"
+</ifmodule>\n
+CACHE;
 		}
 
 		$realm = L_REALM;
@@ -74,15 +81,13 @@ AuthName "$realm"
 $authUserFile
 Require valid-user
 
+Options -Indexes
+
 <Files "*.log">
 	order deny,allow
 	deny from all
 </Files>
-
-<IfModule mod_expires.c>
-	ExpiresActive on
-	ExpiresByType application/javascript "access plus 20 minutes"
-</ifmodule>\n
+$cache
 CONTENT;
 		file_put_contents(HT_ACCESS, $content);
 		chmod(HT_ACCESS, 0644);

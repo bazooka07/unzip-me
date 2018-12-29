@@ -31,7 +31,16 @@ foreach(
 		if(is_readable($filename)) { $lang = $shortcut; break; }
 	}
 }
-require __DIR__ ."/$lang.php";
+
+$filename = __DIR__ ."/$lang.php";
+if(!file_exists($filename)) {
+	header('HTTP/1.0 503 Service Unavailable');
+	header('Content-Type: text/palin');
+	echo "$lang.php file is missing\n\n";
+	exit;
+}
+
+require $filename;
 
 function noCache() {
 	header('Expires: Tue, 03 Jul 2001 06:00:00 GMT');
